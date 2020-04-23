@@ -15,10 +15,10 @@ jobs:
   - template: templates/windows/compile.yml
   - template: templates/windows/pack.yml
 
-- job: osx
-  displayName: macOS
-  pool:
-    vmImage: $(osxImage)
-  steps:
-  - template: templates/osx/compile.yml
-  - template: templates/osx/pack.unsigned.yml
+# - job: osx
+#   displayName: macOS
+#   pool:
+#     vmImage: $(osxImage)
+#   steps:
+#   - template: templates/osx/compile.yml
+#   - template: templates/osx/pack.unsigned.yml
