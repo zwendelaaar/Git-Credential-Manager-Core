@@ -10,6 +10,10 @@ steps:
   #   inputs:
   #     packageType: sdk
   #     version: 3.1.x
+  
+  - script: dotnet --version
+  - script: dotnet nuget --version
+  - script: dotnet --list-sdks
 
   - task: DotNetCoreCLI@2
     displayName: Compile common code and Windows Helpers
@@ -18,12 +22,15 @@ steps:
       projects: 'Git-Credential-Manager.sln'
       arguments: '--configuration=Windows$(configuration) -v:d'
 
-  - task: DotNetCoreCLI@2
-    displayName: Run common unit tests
-    inputs:
-      command: test
-      projects: 'Git-Credential-Manager.sln'
-      arguments: '--configuration=Mac$(configuration)'
-      publishTestResults: true
-      testRunTitle: 'Unit tests (Windows)'
+  - script: dotnet build -c:Windows$(configuration) -v:d
+    displayName: cli build
+
+  # - task: DotNetCoreCLI@2
+  #   displayName: Run common unit tests
+  #   inputs:
+  #     command: test
+  #     projects: 'Git-Credential-Manager.sln'
+  #     arguments: '--configuration=Mac$(configuration)'
+  #     publishTestResults: true
+  #     testRunTitle: 'Unit tests (Windows)'
 
