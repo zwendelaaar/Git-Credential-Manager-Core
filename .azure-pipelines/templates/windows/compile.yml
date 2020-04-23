@@ -16,7 +16,7 @@ steps:
     inputs:
       command: build
       projects: 'Git-Credential-Manager.sln'
-      arguments: '--configuration=Windows$(configuration)'
+      arguments: '--configuration=Windows$(configuration) -v:d'
 
   - task: DotNetCoreCLI@2
     displayName: Run common unit tests
