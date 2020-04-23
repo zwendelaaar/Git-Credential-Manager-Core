@@ -15,13 +15,6 @@ steps:
   - script: dotnet nuget --version
   - script: dotnet --list-sdks
 
-  - task: DotNetCoreCLI@2
-    displayName: Compile common code and Windows Helpers
-    inputs:
-      command: build
-      projects: 'Git-Credential-Manager.sln'
-      arguments: '--configuration=Windows$(configuration) -v:d'
-
   - script: dotnet build -c:Windows$(configuration) -v:d
     displayName: cli build
 
