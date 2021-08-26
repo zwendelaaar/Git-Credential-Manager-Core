@@ -1,5 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -12,6 +10,16 @@ using Microsoft.Git.CredentialManager.Authentication.OAuth;
 
 namespace Atlassian.Bitbucket
 {
+
+    [Flags]
+    public enum AuthenticationModes
+    {
+        None = 0,
+        Basic = 1,
+        OAuth = 1 << 1,
+
+        All = Basic | OAuth
+    }
     public interface IBitbucketAuthentication : IDisposable
     {
         Task<ICredential> GetBasicCredentialsAsync(Uri targetUri, string userName);
@@ -50,7 +58,7 @@ namespace Atlassian.Bitbucket
                 var cmdArgs = new StringBuilder("userpass");
                 if (!string.IsNullOrWhiteSpace(userName))
                 {
-                    cmdArgs.AppendFormat(" --username {0}", userName);
+                    cmdArgs.AppendFormat(" --username {0}", QuoteCmdArg(userName));
                 }
 
                 IDictionary<string, string> output = await InvokeHelperAsync(helperPath, cmdArgs.ToString());
@@ -121,6 +129,8 @@ namespace Atlassian.Bitbucket
 
         public async Task<OAuth2TokenResult> CreateOAuthCredentialsAsync(Uri targetUri)
         {
+            ThrowIfUserInteractionDisabled();
+
             var oauthClient = new BitbucketOAuth2Client(HttpClient, Context.Settings);
 
             var browserOptions = new OAuth2WebBrowserOptions
@@ -129,7 +139,7 @@ namespace Atlassian.Bitbucket
                 FailureResponseHtmlFormat = BitbucketResources.AuthenticationResponseFailureHtmlFormat
             };
 
-            var browser = new OAuth2SystemWebBrowser(browserOptions);
+            var browser = new OAuth2SystemWebBrowser(Context.Environment, browserOptions);
             var authCodeResult = await oauthClient.GetAuthorizationCodeAsync(Scopes, browser, CancellationToken.None);
 
             return await oauthClient.GetTokenByAuthorizationCodeAsync(authCodeResult, CancellationToken.None);

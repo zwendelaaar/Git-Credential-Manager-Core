@@ -1,5 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT license.
 using System;
 using System.Net.Http;
 using Microsoft.Git.CredentialManager;
@@ -17,12 +15,7 @@ namespace GitHub
         {
             Uri authEndpoint = new Uri(baseUri, GitHubConstants.OAuthAuthorizationEndpointRelativeUri);
             Uri tokenEndpoint = new Uri(baseUri, GitHubConstants.OAuthTokenEndpointRelativeUri);
-
-            Uri deviceAuthEndpoint = null;
-            if (GitHubConstants.IsOAuthDeviceAuthSupported)
-            {
-                deviceAuthEndpoint = new Uri(baseUri, GitHubConstants.OAuthDeviceEndpointRelativeUri);
-            }
+            Uri deviceAuthEndpoint = new Uri(baseUri, GitHubConstants.OAuthDeviceEndpointRelativeUri);
 
             return new OAuth2ServerEndpoints(authEndpoint, tokenEndpoint)
             {
